@@ -1,0 +1,66 @@
+/shark-tank-website/
+  ├── index.html (the code below)
+  └── images/
+      ├── bracelet-pearl.jpg
+      ├── bracelet-blush.jpg
+      ├── bracelet-lavender.jpg
+      ├── bracelet-mint.jpg
+      ├── bracelet-sky.jpg
+      ├── bag-cream.jpg
+      ├── bag-sage.jpg
+      ├── bag-rose.jpg
+      ├── bag-beige.jpg
+      ├── bag-grey.jpg
+      ├── bottle-mint.jpg
+      ├── bottle-lavender.jpg
+      ├── bottle-peach.jpg
+      ├── bottle-blue.jpg
+      ├── bottle-white.jpg
+      ├── earrings-pearl.jpg
+      ├── earrings-gold.jpg
+      ├── earrings-rose.jpg
+      ├── earrings-silver.jpg
+      ├── earrings-iridescent.jpg
+      ├── tissue-cream.jpg
+      ├── tissue-sage.jpg
+      ├── tissue-blush.jpg
+      ├── tissue-grey.jpg
+      ├── tissue-lavender.jpg
+      ├── hairband-pearl.jpg
+      ├── hairband-rosegold.jpg
+      ├── hairband-champagne.jpg
+      ├── hairband-silver.jpg
+      ├── hairband-blush.jpg
+      ├── mobile-matte.jpg
+      ├── mobile-clear.jpg
+      ├── mobile-blush.jpg
+      ├── mobile-lavender.jpg
+      ├── mobile-mint.jpg
+      ├── ring-accessory.png (transparent PNG of ring holder)
+      ├── mirror-accessory.png (transparent PNG of mirror)
+      └── pocket-accessory.png (transparent PNG of card pocket)
+
+
+
+
+
+
+
+
+      Step 1: Create EmailJS Account (2 minutes)
+Go to https://www.emailjs.com/ and sign up (free)
+
+Click "Add New Service" → Choose "Gmail" (or your email provider)
+
+Connect your Gmail account
+
+Note down your Service ID
+
+Go to "Email Templates" → Create new template
+
+Note down your Template ID
+
+Go to Account → API Keys → Note down your Public Key
+
+Step 2: Replace the keys in the code below
+Search for YOUR_PUBLIC_KEY, YOUR_SERVICE_ID, YOUR_TEMPLATE_ID and replace them.
