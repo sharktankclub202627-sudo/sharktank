@@ -692,7 +692,7 @@
             margin: 2rem 4% 0;
         }
 
-        /* Responsive Design for All Displays */
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .product-grid {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -796,20 +796,6 @@
             }
         }
 
-        /* Tablet Portrait (768px - 1024px) */
-        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
-            .product-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .hero {
-                gap: 1.5rem;
-            }
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-        }
-
-        /* Smartboard / Large Screens */
         @media (min-width: 1400px) {
             .product-grid {
                 grid-template-columns: repeat(4, 1fr);
@@ -832,21 +818,6 @@
             .about-section {
                 margin: 3rem 6%;
                 padding: 4rem;
-            }
-        }
-
-        /* Extra Large Screens */
-        @media (min-width: 1920px) {
-            body {
-                max-width: 1920px;
-                margin: 0 auto;
-            }
-            .product-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 3rem;
-            }
-            .hero h1 {
-                font-size: 4rem;
             }
         }
     </style>
@@ -1098,8 +1069,7 @@
     <div class="about-section" id="about">
         <h2>About Us 🦈</h2>
         <p>
-            HandinHand Creation is a website of the SharkTank club of<strong> Radhwa International School Yanbu</strong> dedicated to nurturing creativity and entrepreneurial thinking among students. Our students design and handcraft every piece with love and dedication. From crochet accessories to custom mobile covers, each product reflects the innovation, talent, and entrepreneurial spirit we strive to inspire. By supporting us, you are encouraging the next generation of creative young leaders and entrepreneurs!
-
+            HandinHand Creation is a website of the SharkTank club of <strong>Radwa International School Yanbu</strong> dedicated to nurturing creativity and entrepreneurial thinking among students. Our students design and handcraft every piece with love and dedication. From crochet accessories to custom mobile covers, each product reflects the innovation, talent, and entrepreneurial spirit we strive to inspire. By supporting us, you are encouraging the next generation of creative young leaders and entrepreneurs!
         </p>
     </div>
 
@@ -1111,15 +1081,12 @@
 
     <script>
         // ============ EMAILJS CONFIGURATION ============
-        // REPLACE THESE with your actual EmailJS keys
         const EMAILJS_PUBLIC_KEY = 'LCIe7vD8AkMv9GNmN';
         const EMAILJS_SERVICE_ID = 'service_u6r2ffo';
         const EMAILJS_TEMPLATE_ID = 'template_cn1vin8';
         
         // Initialize EmailJS
-        (function() {
-            emailjs.init(EMAILJS_PUBLIC_KEY);
-        })();
+        emailjs.init(EMAILJS_PUBLIC_KEY);
 
         // ============ IMAGE PATHS ============
         const productImages = {
@@ -1352,7 +1319,6 @@
         }
 
         function updateCartUI() {
-            const countSpan = document.getElementById('cart-count');
             const countBadge = document.getElementById('cart-count');
             const totalSpan = document.getElementById('cart-total');
             const listDiv = document.getElementById('cart-items-list');
@@ -1376,7 +1342,7 @@
                             `<div class="cart-item-img" style="display:flex; align-items:center; justify-content:center; background:#f4ede6;"><i class="fas fa-box" style="color:#b76e4b;"></i></div>`
                         }
                         <div style="flex:1; min-width:0;">
-                            <span style="font-weight:500; font-size:0.85rem; display:block; word-wrap:break-word;">${item.name}</span>
+                            <span style="font-weight:500; font-size:0.85rem; display:block; word-wrap:break-word;">${escapeHtml(item.name)}</span>
                         </div>
                         <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
                             <span style="font-weight:600; font-size:0.85rem;">SAR ${item.price}</span>
@@ -1387,6 +1353,15 @@
                 bookBtn.disabled = false;
                 bookBtn.style.opacity = '1';
             }
+        }
+        
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
         }
 
         function removeFromCart(index) {
@@ -1409,7 +1384,7 @@
             
             summaryDiv.innerHTML = cart.map(item => `
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>${item.name}</span>
+                    <span>${escapeHtml(item.name)}</span>
                     <span>SAR ${item.price}</span>
                 </div>
             `).join('') + `<div style="display:flex; justify-content:space-between; font-weight:bold; margin-top:10px; padding-top:10px; border-top:2px solid #3a2a1a;">
@@ -1422,28 +1397,32 @@
         }
 
         function submitBooking() {
-            const name = document.getElementById('customerName').value;
-            const email = document.getElementById('customerEmail').value;
-            const phone = document.getElementById('customerPhone').value;
-            const request = document.getElementById('customRequest').value;
+            const name = document.getElementById('customerName').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const request = document.getElementById('customRequest').value.trim();
             
             if (!name || !email || !phone) {
                 alert('Please fill in all required fields (Name, Email, Phone)!');
                 return;
             }
             
+            const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
+            const orderNumber = 'HIH-' + Date.now().toString(36).toUpperCase();
+            const orderDate = new Date().toLocaleString();
+            
             const bookingData = {
                 customerName: name,
                 customerEmail: email,
                 customerPhone: phone,
-                customRequest: request,
+                customRequest: request || 'None',
                 items: cart.map(item => `${item.name} - SAR ${item.price}`).join(', '),
-                total: `SAR ${cart.reduce((sum, item) => sum + item.price, 0)}`,
-                orderDate: new Date().toLocaleString(),
-                orderNumber: 'HIH-' + Date.now().toString(36).toUpperCase()
+                total: `SAR ${totalAmount}`,
+                orderDate: orderDate,
+                orderNumber: orderNumber
             };
             
-            // Save booking to localStorage (persistent record)
+            // Save booking to localStorage
             const allBookings = JSON.parse(localStorage.getItem('handinhandBookings')) || [];
             allBookings.push(bookingData);
             localStorage.setItem('handinhandBookings', JSON.stringify(allBookings));
@@ -1456,7 +1435,7 @@
                 bookingData
             );
             
-            // Send email via EmailJS
+            // Send email via EmailJS with complete details
             sendEmailNotification(bookingData);
             
             // Clear cart
@@ -1465,7 +1444,7 @@
             updateCartUI();
             
             // Show confirmation
-            alert(`✅ Booking Confirmed!\n\nOrder #${bookingData.orderNumber}\nThank you ${name}! We'll contact you at ${email} or ${phone} within 24 hours.`);
+            alert(`✅ Booking Confirmed!\n\nOrder #${orderNumber}\nThank you ${name}! We'll contact you at ${email} or ${phone} within 24 hours.`);
             
             closeAllModals();
             document.getElementById('customerName').value = '';
@@ -1475,24 +1454,70 @@
         }
 
         function sendEmailNotification(bookingData) {
+            // Format items for email
+            const itemsList = bookingData.items.split(', ').map(item => `  • ${item}`).join('\n');
+            
             const templateParams = {
-                to_email: 'sharktankclub202627@gmail.com', // REPLACE with your email
+                // Send to your email address
+                to_email: 'sharktankclub202627@gmail.com',
+                // Customer details
                 customer_name: bookingData.customerName,
                 customer_email: bookingData.customerEmail,
                 customer_phone: bookingData.customerPhone,
-                order_items: bookingData.items,
-                order_total: bookingData.total,
+                // Order details
                 order_number: bookingData.orderNumber,
                 order_date: bookingData.orderDate,
-                special_requests: bookingData.customRequest || 'None'
+                order_items: bookingData.items,
+                order_total: bookingData.total,
+                special_requests: bookingData.customRequest,
+                // Formatted message for email body
+                message: `
+🛍️ NEW ORDER RECEIVED! 🛍️
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ORDER DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Order #: ${bookingData.orderNumber}
+Date: ${bookingData.orderDate}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CUSTOMER INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${bookingData.customerName}
+Email: ${bookingData.customerEmail}
+Phone: ${bookingData.customerPhone}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ITEMS ORDERED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${itemsList}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL AMOUNT: ${bookingData.total}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${bookingData.customRequest !== 'None' ? `SPECIAL REQUESTS:\n${bookingData.customRequest}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` : ''}
+
+Please contact the customer within 24 hours to confirm their order.
+
+✨ HandinHand Creation - Radwa International School ✨
+                `.trim(),
+                // Also include individual fields for template flexibility
+                from_name: bookingData.customerName,
+                reply_to: bookingData.customerEmail
             };
+            
+            console.log('Sending email with order data:', templateParams);
             
             emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
                 .then(function(response) {
-                    console.log('Email sent!', response.status);
-                }, function(error) {
-                    console.log('Email failed...', error);
-                    // Still saved in localStorage as backup
+                    console.log('✅ Email sent successfully!', response.status, response.text);
+                    showToast('Order confirmation email sent!', null);
+                })
+                .catch(function(error) {
+                    console.error('❌ Email failed:', error);
+                    console.error('Error details:', error.text);
+                    // Don't show error to user since order is saved locally
                 });
         }
 
@@ -1509,6 +1534,8 @@
             };
             
             notifications.unshift(notification);
+            // Keep only last 20 notifications
+            if (notifications.length > 20) notifications.pop();
             localStorage.setItem('handinhandNotifications', JSON.stringify(notifications));
             renderNotifications();
         }
@@ -1520,12 +1547,12 @@
                 return;
             }
             
-            panel.innerHTML = notifications.map(notif => `
+            panel.innerHTML = notifications.slice(0, 5).map(notif => `
                 <div class="notification-item ${notif.read ? '' : 'new'}" onclick="viewNotification('${notif.id}')">
                     <span class="notif-icon">${getNotifIcon(notif.type)}</span>
                     <div class="notif-content">
-                        <div class="notif-title">${notif.title}</div>
-                        <div class="notif-detail">${notif.detail}</div>
+                        <div class="notif-title">${escapeHtml(notif.title)}</div>
+                        <div class="notif-detail">${escapeHtml(notif.detail)}</div>
                         <div class="notif-time">${notif.timestamp}</div>
                     </div>
                     <span class="notif-close" onclick="event.stopPropagation(); dismissNotification('${notif.id}')">&times;</span>
@@ -1550,7 +1577,7 @@
                 renderNotifications();
             }
             if (notif && notif.data) {
-                alert(`Order Details:\n\nOrder #: ${notif.data.orderNumber || 'N/A'}\nCustomer: ${notif.data.customerName}\nItems: ${notif.data.items}\nTotal: ${notif.data.total}\nDate: ${notif.data.orderDate}`);
+                alert(`📋 ORDER DETAILS 📋\n\nOrder #: ${notif.data.orderNumber || 'N/A'}\nCustomer: ${notif.data.customerName}\nEmail: ${notif.data.customerEmail}\nPhone: ${notif.data.customerPhone}\nItems: ${notif.data.items}\nTotal: ${notif.data.total}\nDate: ${notif.data.orderDate}\n\nSpecial Requests: ${notif.data.customRequest || 'None'}`);
             }
         }
 
@@ -1572,9 +1599,9 @@
                 display: flex; align-items: center; gap: 10px;
             `;
             if (imgPath) {
-                toast.innerHTML = `<img src="${imgPath}" style="width:35px; height:35px; border-radius:6px; object-fit:cover;"> ${message}`;
+                toast.innerHTML = `<img src="${imgPath}" style="width:35px; height:35px; border-radius:6px; object-fit:cover;"> ${escapeHtml(message)}`;
             } else {
-                toast.innerHTML = message;
+                toast.innerHTML = escapeHtml(message);
             }
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
@@ -1596,15 +1623,13 @@
             document.getElementById('navLinks').classList.toggle('open');
         }
 
-        // ============ ADMIN FUNCTIONS (For website owner) ============
-        // View all bookings in console
+        // ============ ADMIN FUNCTIONS ============
         window.viewAllBookings = function() {
             const bookings = JSON.parse(localStorage.getItem('handinhandBookings')) || [];
             console.table(bookings);
             return bookings;
         };
         
-        // Mark item as out of stock
         window.setOutOfStock = function(productType) {
             if (!outOfStockItems.includes(productType)) {
                 outOfStockItems.push(productType);
@@ -1614,7 +1639,6 @@
             }
         };
         
-        // Mark item as back in stock
         window.setInStock = function(productType) {
             outOfStockItems = outOfStockItems.filter(p => p !== productType);
             localStorage.setItem('handinhandOutOfStock', JSON.stringify(outOfStockItems));
@@ -1646,7 +1670,6 @@
             renderNotifications();
             updateOutOfStockUI();
             
-            // Show instructions for owner
             console.log('🤝 HandinHand Creation - Admin Console');
             console.log('📋 viewAllBookings() - See all bookings');
             console.log('📦 setOutOfStock("bracelet") - Mark item out of stock');
